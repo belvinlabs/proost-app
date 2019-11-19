@@ -1,0 +1,7 @@
+indexes:
+
+- kind: APICredentials
+  properties:
+  - name: user
+  - name: created
+    direction: desc

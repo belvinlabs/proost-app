@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  description: The Proost API
+  version: 0.0.1
+  title: Proost API
+  contact:
+    name: Proost API Team
+    email: "help@getproost.com"
+    url: https://getproost.com
+tags:
+- name: "user"
+  description: "Operations about user"
+- name: "sync"
+  description: "A syncing task"
+servers:
+  - url: https://app.getproost.com/api
+paths:
+#   /users:
+#     post:
+#       tags:
+#       - "user"
+#       summary: "Creates a new user and user database"
+#       description: ""
+#       operationId: "createUser"
+#       requestBody:
+#         required: true
+#         description: User object that needs to be created
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               required:
+#               - email
+#               properties:
+#                 email:
+#                   title: The unique email for a user
+#                   description: The email address can be changed, but need to be unique
+#                   type: string
+#       responses:
+#         200:
+#           description: "User sucessfully created"
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/User'
+#         409:
+#           description: "Invalid input"
+  /users/{user_id}:
+    get:
+      tags:
+      - "user"
+      summary: "Get user by user ID"
+      description: ""
+      operationId: "getUserByID"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "The ID of the user that needs to be fetched"
+        required: true
+        schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        200:
+          description: "User found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: "User not found"      
+  /users/{email}:
+    get:
+      tags:
+      - "user"
+      summary: "Get user by user email"
+      description: ""
+      operationId: "getUserByEmail"
+      parameters:
+      - name: "email"
+        in: "path"
+        description: "The email of the user that needs to be fetched"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: "User found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        409:
+          description: "Invalid email supplied"
+        404:
+          description: "User not found"
+  /syncs:
+    post:
+      tags:
+      - "sync"
+      summary: "Creates a new sync task"
+      description: ""
+      operationId: "createSync"
+      requestBody:
+        required: true
+        description: Sync object
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - database_id
+              - sync_type
+              - synced_ids
+              properties:
+                database_id:
+                  title: Database ID
+                  description: The ID of the database where we need to store the data in
+                  type: string
+                sync_type:
+                  title: Sync type
+                  description: The datasource we are syncing data from
+                  type: string
+                synced_ids:
+                  title: IDs to sync
+                  description: IDs to sync
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: "User sucessfully created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        409:
+          description: "Invalid input"
+  /syncs/tasks/calendar_sync:
+    post:
+      tags:
+      - "sync"
+      summary: "Runs the sync task synchronously"
+      description: ""
+      operationId: "runSync"
+      requestBody:
+        required: true
+        description: Sync object
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              - calendars
+              properties:
+                user_id:
+                  title: User ID
+                  description: The User ID for which user to start a sync
+                  type: string
+                calendars:
+                  title: IDs to sync
+                  description: IDs to sync
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: "User sucessfully created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        409:
+          description: "Invalid input"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+  securitySchemes:
+    cookieAuth:         # arbitrary name for the security scheme; will be used in the "security" key later
+      type: apiKey
+      in: cookie
+      name: session
+security:
+  - cookieAuth: []
+    

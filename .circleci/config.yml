@@ -1,0 +1,46 @@
+version: 2
+jobs:
+  build_and_deploy:
+    docker:
+      - image: circleci/python:3.7.4-stretch
+    steps:
+      - checkout
+      # install gcloud
+      - run: curl -o $HOME/google-cloud-sdk-265.0.0-linux-x86_64.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-265.0.0-linux-x86_64.tar.gz
+      - run: tar zxf $HOME/google-cloud-sdk-265.0.0-linux-x86_64.tar.gz -C $HOME
+      - run: CLOUDSDK_CORE_DISABLE_PROMPTS=1 $HOME/google-cloud-sdk/install.sh
+      - run: echo 'source ${HOME}/google-cloud-sdk/path.bash.inc' >> $BASH_ENV
+      # Retrieve our secrets from the CircleCI environment
+      - run: echo $ENV_BASE_64 | base64 --decode > server/.env
+      - run: echo $GOOGLE_CLIENT_SECRETS | base64 --decode > server/src/google_client_secret.json
+      # build client
+      - run: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      - run: echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+      - run: sudo apt-get install apt-transport-https
+      - run: sudo apt-get update
+      - run: sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+      - run: sudo apt-get install -y nodejs
+      - run: sudo apt-get install yarn
+      - run: cd client && yarn install && yarn build
+      # Deployment service account needs these roles:
+      # - App Engine Deployer (to deploy new versions)
+      # - App Engine Service Admin (to change versions)
+      # - Cloud Datastore Index Admin (to update indexes)
+      # - Storage Object Creator (to upload app files)
+      # - Storage Object Viewer (to list app files)
+      # - Cloud Build Editor (to create builds)
+      - run: echo $DEPLOYER_CLIENT_SECRETS | base64 --decode > ${HOME}/deployer_client_secrets.json
+      - run: sudo pip install -r server/src/requirements.txt
+      - run: cd server && python scripts/deploy_set_variables.py
+      - run: gcloud auth activate-service-account --key-file ${HOME}/deployer_client_secrets.json
+      - run: gcloud config set project $GCLOUD_PROJECT
+      - run: gcloud app deploy --project $GCLOUD_PROJECT -q -v $(date +%s) server/src/app.yaml server/src/index.yaml
+# TODO: Split into build/test and deploy jobs (latter is the only job that needs gcloud/deployment creds).
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build_and_deploy:
+          filters:
+            branches:
+              only: 'master'

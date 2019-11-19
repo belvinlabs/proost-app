@@ -1,0 +1,33 @@
+runtime: python37
+automatic_scaling:
+  min_instances: 1
+inbound_services:
+- warmup
+env_variables:
+  FLASK_SECRET_KEY: placeholder
+  APP_DB_USER: placeholder
+  APP_DB_PASS: placeholder
+  APP_DB_NAME: placeholder
+  APP_DB_HOST: placeholder
+  APP_DB_PORT: placeholder
+  EXAMPLE_DB_NAME: placeholder
+  CLOUD_SQL_CONNECTION_NAME: placeholder
+  CLOUD_TASK_QUEUE: placeholder
+  METABASE_USERNAME: placeholder
+  METABASE_PASSWORD: placeholder
+  METABASE_URL: placeholder
+  DOMAIN_BASE: placeholder
+handlers:
+- url: /((privacy|terms))$
+  static_files: static/docs/\1.html
+  upload: static/docs/.*
+- url: /images
+  secure: always
+  static_dir: build/images
+- url: /assets
+  secure: always
+  static_dir: build
+- url: /.*
+  script: auto
+  secure: always
+  redirect_http_response_code: 301

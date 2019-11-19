@@ -1,0 +1,52 @@
+{
+  "name": "proost-client",
+  "version": "0.1.0",
+  "private": true,
+  "//": "`homepage` attribute allows us to serve all build assets from the /assets/... path. See https://create-react-app.dev/docs/deployment/#building-for-relative-paths.",
+  "homepage": "/assets",
+  "dependencies": {
+    "@material-ui/core": "^4.5.0",
+    "@material-ui/icons": "^4.5.1",
+    "axios": "^0.19.0",
+    "chart.js": "^2.8.0",
+    "immutable": "^4.0.0-rc.12",
+    "lodash": "^4.17.15",
+    "react": "^16.10.2",
+    "react-albus": "^2.0.0",
+    "react-dom": "^16.10.2",
+    "react-redux": "^7.1.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.2.0",
+    "react-tooltip": "^3.11.1",
+    "redux": "^4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "copy-build": "rm -rf ../server/src/build && cp -r build/ ../server/src/build",
+    "build": "react-app-rewired build && yarn copy-build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "customize-cra": "^0.8.0",
+    "react-app-rewired": "^2.1.3"
+  }
+}
