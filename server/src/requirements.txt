@@ -20,4 +20,4 @@ Flask-SQLAlchemy==2.4.1
 SQLAlchemy-Utils==0.34.2
 Jinja2==2.10.3
 GitPython==3.0.3
-cryptography==2.7
+cryptography==3.2
