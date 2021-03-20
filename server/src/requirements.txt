@@ -18,6 +18,6 @@ Flask-Migrate==2.5.2
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.1
 SQLAlchemy-Utils==0.34.2
-Jinja2==2.10.3
+Jinja2==2.11.3
 GitPython==3.0.3
 cryptography==2.7
