@@ -5,7 +5,7 @@ google-auth-oauthlib==0.3.0
 google-cloud-datastore==1.9.0
 google-cloud-tasks==1.1.0
 googleapis-common-protos==1.6.0
-pyjwt==1.7.1
+pyjwt==2.4.0
 requests==2.22.0
 marshmallow==3.2.1
 python-dotenv==0.10.3
